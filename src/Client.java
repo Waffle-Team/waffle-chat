@@ -54,6 +54,7 @@ public class Client implements Runnable{
                 //Envia mensagem ao servidor
                 if(teclado.hasNextLine()){
                     client_msg =  teclado.nextLine();
+                    // TODO: tratar msg do client para saber se é um comando (sugestão utilizar logica igual a do minecraft)
                     if(client_msg.length() < 1337){
                         request_msg.println( this.nome + client_msg);
                     }else{
