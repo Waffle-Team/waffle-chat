@@ -27,7 +27,7 @@ public class Client implements Runnable{
         * socket para que seja executado em um novo processo.
         * Permitindo assim a conexão de vário clientes com o servidor.
         * */
-        Client c = new Client(socket, "marcel");
+        Client c = new Client(socket, "Generic");
         Thread t = new Thread(c);
         t.start();
     }
@@ -39,7 +39,7 @@ public class Client implements Runnable{
             Scanner resposta = null;
 
 
-            //Prepara para leitura do teclado
+            //Objeto para leitura do teclado
             Scanner teclado = new Scanner(System.in);
 
             //Cria  objeto para enviar a mensagem ao servidor
@@ -49,10 +49,16 @@ public class Client implements Runnable{
             resposta = new Scanner(this.skt.getInputStream());
 
             //inicia conversa com o servidor
+            String client_msg;
             while(this.skt.isConnected()){
                 //Envia mensagem ao servidor
                 if(teclado.hasNextLine()){
-                    request_msg.println( this.nome + teclado.nextLine());
+                    client_msg =  teclado.nextLine();
+                    if(client_msg.length() < 1337){
+                        request_msg.println( this.nome + client_msg);
+                    }else{
+                        System.out.println("Mensagem é muito grande para ser enviada limite de leet caracteres\n\n\n\n");
+                    }
                 }
                 //verifica resposta do servidor
                 if(resposta.hasNextLine()){
