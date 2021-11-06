@@ -1,13 +1,9 @@
-import javax.naming.ldap.SortKey;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Server implements Runnable{
@@ -22,9 +18,16 @@ public class Server implements Runnable{
 
         for (int i = 0; i < Server.clients.size(); i++) {
             Socket client = Server.clients.get(i);
-            System.out.println("Broadcast to client:" + client);
-            resposta = new PrintStream(client.getOutputStream());
-            resposta.println(msg);
+            if(client.isConnected()){
+                System.out.println("Broadcast to client:" + client);
+                resposta = new PrintStream(client.getOutputStream());
+                resposta.println(msg);
+            }else{
+                //DEBUG: clients não desconectam do servidor
+                System.out.println("cliente desconectado do servidor:");
+                Server.clients.remove(Server.clients.get(i));
+            }
+
         }
     }
 

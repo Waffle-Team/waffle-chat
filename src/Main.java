@@ -1,6 +1,9 @@
+import java.awt.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Array;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -37,8 +40,65 @@ public class Main {
                      *  Logar no chat  *
                      * * * * * * * * * */
                     Socket socket = new Socket("127.0.0.1", 12345);
+                    System.out.println("""
+                            Selecione a cor que deseja usar:
+                            
+                            1. Aleatoria
+                            2. Vermelho
+                            3. Verde
+                            4. Amarelo
+                            5. Azul
+                            """);
+                    int colorSelector = leitor_teclado.nextInt();
 
-                    Thread clientThead = new Thread( new Client(socket, apelido));
+                    int r = 0, g = 0, b = 0;
+
+                    boolean isValidColor = false;
+                    do{
+                        switch (colorSelector){
+                            case 1:
+                                Random random = new Random();
+                                r = random.nextInt(255);
+                                g = random.nextInt(255);
+                                b = random.nextInt(255);
+                                isValidColor = true;
+                                break;
+                            case 2:
+                                //vermelo
+                                r = 168;
+                                g = 50;
+                                b = 52;
+                                isValidColor = true;
+                                break;
+                            case 3:
+                                //verde
+                                r = 40;
+                                g = 122;
+                                b = 42;
+                                isValidColor = true;
+                                break;
+                            case 4:
+                                //amarelo
+                                r = 200;
+                                g = 195;
+                                b = 0;
+                                isValidColor = true;
+                                break;
+                            case 5:
+                                //azul
+                                r = 28;
+                                g = 0;
+                                b = 105;
+                                isValidColor = true;
+                                break;
+                            default:
+                                System.out.println("cor invalida");
+                        }
+                    }while(!isValidColor);
+
+
+
+                    Thread clientThead = new Thread( new Client(socket, apelido, new Color(r,g,b)));
                     clientThead.start();
                     clientThead.join();
                     break;
