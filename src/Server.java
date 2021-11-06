@@ -1,19 +1,36 @@
+import javax.naming.ldap.SortKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Server implements Runnable{
     public Socket skt;
+    public static ArrayList<Socket> clients = new ArrayList<Socket>();
 
     public Server(Socket cliente){
         this.skt = cliente;
     }
+    public static void respondeClients(String msg) throws IOException {
+        PrintStream resposta;
+
+        for (int i = 0; i < Server.clients.size(); i++) {
+            Socket client = Server.clients.get(i);
+            System.out.println("Broadcast to client:" + client);
+            resposta = new PrintStream(client.getOutputStream());
+            resposta.println(msg);
+        }
+    }
+
 
     public static void main(String[] args)  throws IOException {
+
 
         //Cria um socket na porta 12345
         ServerSocket servidor = new ServerSocket (12345);
@@ -33,6 +50,10 @@ public class Server implements Runnable{
             // Cria uma thread do servidor para tratar a conexão
             Server tratamento = new Server(cliente);
             Thread t = new Thread(tratamento);
+
+            //adiciona client a lista de clients do servidor
+            clients.add(cliente);
+
             // Inicia a thread para o cliente conectado
             t.start();
         }while (cliente != null);
@@ -43,37 +64,28 @@ public class Server implements Runnable{
     */
     public void run(){
         System.out.println("Nova conexao com o cliente " + this.skt.getInetAddress().getHostAddress());
-
+        System.out.println("Total de clients conectados: " + Server.clients.size());
 
         try {
             Scanner request = null;
-            PrintStream resposta;
             String ultima_msg = null;
 
             //Cria objeto de resquests do cliente
             request = new Scanner(this.skt.getInputStream());
 
-            //Cria objeto de respostas ao cliente
-            resposta = new PrintStream(this.skt.getOutputStream());
+
 
 
             //inicia conversa com o cliente
-            /*
-            *  DEBUG: a resposta ao client ainda é a
-            *  propia mensagem pelo escopo da thead,
-            *  é necessario implementar um buffer no escopo global
-            *  e varrer thead, para enviar as mensagens recebidas
-            * */
             while (this.skt.isConnected()){
                 //recebe mensagem de cliente
                 if(request.hasNextLine()){
                     ultima_msg = request.nextLine();
+                    Server.respondeClients(ultima_msg);
                     System.out.println(ultima_msg);
                 }
-                //responde ao cliente
-                if(ultima_msg != null){
-                    resposta.println(ultima_msg);
-                }
+
+
             }
 
             //Finaliza objetos

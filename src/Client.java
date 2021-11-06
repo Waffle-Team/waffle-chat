@@ -27,7 +27,7 @@ public class Client implements Runnable{
         * socket para que seja executado em um novo processo.
         * Permitindo assim a conexão de vário clientes com o servidor.
         * */
-        Client c = new Client(socket, "Generic");
+        Client c = new Client(socket, "Anonimo2");
         Thread t = new Thread(c);
         t.start();
     }
@@ -63,6 +63,10 @@ public class Client implements Runnable{
                 }
                 //verifica resposta do servidor
                 if(resposta.hasNextLine()){
+                    /*
+                    * DEBUG: tratar respostas do servidor
+                    *
+                    * */
                     System.out.println(resposta.nextLine());
                 }
             }
