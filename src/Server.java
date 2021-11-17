@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.security.*;
+import java.util.Base64;
 import java.util.*;
 
 public class Server implements Runnable{
@@ -35,6 +37,12 @@ public class Server implements Runnable{
         System.out.println("Total de clients conectados: " + Server.clients.size());
 
         try {
+            // //gerando a chave
+            // KeyPairGenerator geradorParChaves = KeyPairGenerator.getInstance("RSA");
+            // geradorParChaves.initialize(1152);
+            // KeyPair parChaves = geradorParChaves.generateKeyPair();
+
+
             Scanner request = null;
             String ultimamsg = null;
             //Cria objeto de resquests do cliente
@@ -51,7 +59,7 @@ public class Server implements Runnable{
             //Finaliza objetos
             request.close();
             this.skt.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

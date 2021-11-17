@@ -92,6 +92,8 @@ public class Client implements Runnable{
                     textArea.append(texto.substring(name.length()));
                 }
             }
+            this.skt.close();
+            System.out.println("Fim do cliente!");
         }
 
     }

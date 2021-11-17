@@ -5,6 +5,15 @@ import java.util.*;
 
 public class Main {
 
+    public static String generaCaptcha(){
+        String captchaString = "ABCDEFGHIJKLMENOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String captcha = "";
+        for (int i = 0; i < 5; i++){
+            int index = (int) (Math.random() * captchaString.length());
+            captcha = captcha + captchaString.charAt(index);
+        }
+        return captcha;
+    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         //variaveis de controle do app
@@ -21,6 +30,17 @@ public class Main {
 
         //main da main -> aqui é o app rodando
         do{
+            String generateCaptcha = generaCaptcha();
+            System.out.println("captch: " + generateCaptcha);
+            System.out.println("verificar captcha: ");
+            String verificaCaptcha = leitorteclado.next();
+            if (generateCaptcha.equals(verificaCaptcha)){
+                System.out.println("Verificado");
+            } else {
+                System.out.println("Invalidado");
+                break;
+            }
+
             running = true;
             System.out.println("1. Logar no chat");
             System.out.println("2. Abrir servidor");
@@ -33,7 +53,7 @@ public class Main {
                     /* * * * * * * * * *
                      *  Logar no chat  *
                      * * * * * * * * * */
-                    Socket socket = new Socket("127.0.0.1", 12345);
+                    Socket socket = new Socket("127.0.0.1", 12346);
                     System.out.println("Selecione a cor que deseja usar:");
                     System.out.println("1. Aleatoria");
                     System.out.println("2. Vermelho");
@@ -98,7 +118,7 @@ public class Main {
 
                     //Cria um socket na porta 12345
 
-                    ServerSocket servidor = new ServerSocket (12345);
+                    ServerSocket servidor = new ServerSocket (12346);
 
                     /*
                      * Aguarda alguém se conectar. A execução do servidor
