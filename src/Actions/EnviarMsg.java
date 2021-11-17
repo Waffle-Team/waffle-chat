@@ -1,4 +1,4 @@
-package Actions;
+package actions;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class EnviarMsg implements ActionListener {
     private Socket skt;
@@ -17,6 +16,7 @@ public class EnviarMsg implements ActionListener {
         this.skt = s;
         this.clientName = nome;
     }
+
     public void setTextInput(JTextField input){
         this.input = input;
     }
@@ -26,9 +26,16 @@ public class EnviarMsg implements ActionListener {
         //Cria objeto de respostas do servidor
         try{
             PrintStream resposta;
+            
             resposta = new PrintStream(this.skt.getOutputStream());
-            resposta.println(this.clientName + input.getText());
-            input.setText("");
+            String texto = input.getText();
+            if (texto.length() < 1337){
+                resposta.println(this.clientName + texto);
+                input.setText("");
+            }
+            else{
+                input.setText("Texto excedeu o tamanho limite!");
+            }
 
         }catch(IOException ex){
             ex.printStackTrace();

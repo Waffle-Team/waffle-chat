@@ -1,10 +1,7 @@
 import java.awt.*;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.Array;
-import java.util.Random;
-import java.util.Scanner;
+import java.net.*;
+import java.util.*;
 
 public class Main {
 
@@ -13,46 +10,40 @@ public class Main {
         //variaveis de controle do app
         boolean running;
         String apelido;
-        int op_app;
+        int opapp;
 
         //inicialização
-        Scanner leitor_teclado = new Scanner(System.in);
+        Scanner leitorteclado = new Scanner(System.in);
         System.out.print("Digite seu apelido: ");
-        apelido = leitor_teclado.next();
+        apelido = leitorteclado.next();
         System.out.flush();
         System.out.println("O apelido escolhido foi -> " + apelido);
 
         //main da main -> aqui é o app rodando
         do{
-
             running = true;
-            System.out.println("""
-                    1. Logar no chat
-                    2. Abrir servidor
-                    3. Sair
-                    """);
-            System.out.print("Escolha uma das opções acima: ");
-            op_app = leitor_teclado.nextInt();
+            System.out.println("1. Logar no chat");
+            System.out.println("2. Abrir servidor");
+            System.out.println("3. Sair");
+            System.out.print("Escolha uma das opcoes acima: ");
+            opapp = leitorteclado.nextInt();
 
-            switch (op_app){
+            switch (opapp){
                 case 1:
                     /* * * * * * * * * *
                      *  Logar no chat  *
                      * * * * * * * * * */
                     Socket socket = new Socket("127.0.0.1", 12345);
-                    System.out.println("""
-                            Selecione a cor que deseja usar:
-                            
-                            1. Aleatoria
-                            2. Vermelho
-                            3. Verde
-                            4. Amarelo
-                            5. Azul
-                            """);
-                    int colorSelector = leitor_teclado.nextInt();
-
-                    int r = 0, g = 0, b = 0;
-
+                    System.out.println("Selecione a cor que deseja usar:");
+                    System.out.println("1. Aleatoria");
+                    System.out.println("2. Vermelho");
+                    System.out.println("3. Verde");
+                    System.out.println("4. Amarelo");
+                    System.out.println("5. Azul");
+                    int colorSelector = leitorteclado.nextInt();
+                    int r = 0;
+                    int g = 0;
+                    int b = 0;
                     boolean isValidColor = false;
                     do{
                         switch (colorSelector){
@@ -96,29 +87,40 @@ public class Main {
                         }
                     }while(!isValidColor);
 
-
-
                     Thread clientThead = new Thread( new Client(socket, apelido, new Color(r,g,b)));
                     clientThead.start();
                     clientThead.join();
                     break;
                 case 2:
-
                     /* * * * * * * * * *
                     *  abrir servidor  *
                     * * * * * * * * * */
 
                     //Cria um socket na porta 12345
+
                     ServerSocket servidor = new ServerSocket (12345);
+
+                    /*
+                     * Aguarda alguém se conectar. A execução do servidor
+                     * fica bloqueada na chamada do método accept da classe
+                     * ServerSocket. Quando alguém se conectar ao servidor, o
+                     * método desbloqueia e retorna com um objeto da classe
+                     * Socket, que é uma porta da comunicação.
+                     * */
                     System.out.println("Aguardando conexão do cliente...");
+
                     Socket cliente;
                     do{
                         cliente = servidor.accept();
                         // Cria uma thread do servidor para tratar a conexão
+                        Server tratamento = new Server(cliente);
+                        Thread t = new Thread(tratamento);
 
-                        Thread threadServer = new Thread(new Server(cliente));
+                        //adiciona client a lista de clients do servidor
+                        Server.clients.add(cliente);
+
                         // Inicia a thread para o cliente conectado
-                        threadServer.start();
+                        t.start();
                     }while (cliente != null);
                     break;
                 case 3:
@@ -129,7 +131,7 @@ public class Main {
                     running = false;
                     break;
                 default:
-                    System.out.println("Opção invalida");
+                    System.out.println("Opcao invalida");
                     break;
             }
 
